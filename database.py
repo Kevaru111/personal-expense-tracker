@@ -114,19 +114,55 @@ def get_all_users():
             SELECT id, username, email FROM users
         """
     )
-    
+
     users = cursor.fetchall()
 
     connection.close()
     return users
 
-def view_all_transactions():
-    print("View all transactions selected.")
+def get_categories_by_type(category_type):
+    connection = connect_db()
+    cursor = connection.cursor()
 
-def view_transactions_by_category():
-    print("View transactions by category selected.")
+    cursor.execute(
+        """ 
+            SELECT id, name, category_type 
+            FROM categories
+            WHERE category_type = ?
+            ORDER BY name
+        """,
+        (category_type,)
+    )
 
-def view_monthly_summary():
+    categories = cursor.fetchall()
+
+    connection.close()
+    return categories
+
+def get_all_payment_methods():
+    connection = connect_db()
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        SELECT id, name
+        FROM payment_methods
+        ORDER BY id
+        """
+    )
+
+    payment_methods = cursor.fetchall()
+
+    connection.close()
+    return payment_methods
+
+# def view_all_transactions():
+#     print("View all transactions selected.")
+
+# def view_transactions_by_category():
+#     print("View transactions by category selected.")
+
+# def view_monthly_summary():
     print("View monthly summary selected.")
 
 
