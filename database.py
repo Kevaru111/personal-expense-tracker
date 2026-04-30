@@ -129,7 +129,7 @@ def get_categories_by_type(category_type):
             SELECT id, name, category_type 
             FROM categories
             WHERE category_type = ?
-            ORDER BY name
+            ORDER BY id
         """,
         (category_type,)
     )
