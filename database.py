@@ -156,8 +156,33 @@ def get_all_payment_methods():
     connection.close()
     return payment_methods
 
-# def view_all_transactions():
-#     print("View all transactions selected.")
+def get_transaction_by_user(user_id):
+    connection = connect_db()
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """ 
+            SELECT 
+            transactions.id,
+            transactions.transaction_date,
+            transactions.transaction_type,
+            categories.name,
+            payment_methods.name,
+            transactions.amount,
+            transactions.description
+            FROM transactions
+            JOIN categories ON transactions.category_id = categories.id
+            LEFT JOIN payment_methods ON transactions.payment_method_id = payment_methods.id
+            WHERE transactions.user_id = ?
+            ORDER BY transactions.transaction_date DESC, transactions.id DESC
+        """,
+        (user_id,)
+    )
+
+    transactions = cursor.fetchall()
+    connection.close()
+
+    return transactions
 
 # def view_transactions_by_category():
 #     print("View transactions by category selected.")

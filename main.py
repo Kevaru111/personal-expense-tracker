@@ -1,6 +1,6 @@
 from models import Transaction, User, Category, PaymentMethod
 from database import (insert_transaction, insert_user, insert_category, insert_payment_method,
-                      get_all_users, get_categories_by_type, get_all_payment_methods) 
+                      get_all_users, get_categories_by_type, get_all_payment_methods, get_transaction_by_user) 
 
 
 def show_menu():
@@ -114,14 +114,33 @@ def choose_payment_method():
 
     return payment_method_id
 
+def view_all_transactions(user_id):
+    transactions = get_transaction_by_user(user_id)
+
+    if not transactions:
+        print("\nNo transactons found.")
+        return
     
+    for transaction in transactions:
+        transaction_id = transaction[0]
+        transaction_date = transaction[1]
+        transaction_type = transaction[2],
+        category_name = transaction[3],
+        payment_methods_name = transaction[4],
+        amount = transaction[5]
+        description = transaction[6]
+
+        print(
+            f"{transaction_id}. {transaction_date} | "
+            f"{transaction_type} | "
+            f"{category_name} | "
+            f"{payment_methods_name} | "
+            f"{amount:.2f} | "
+            f"{description}"
+        )
 
 
 
-
-
-def view_all_transactions():
-    print("View all transactions selected.")
 
 def view_transactions_by_category():
     print("View transactions by category selected.")
@@ -143,7 +162,7 @@ def main():
         if choice == "1":
             add_transaction(current_user_id)
         elif choice == "2":
-            view_all_transactions()
+            view_all_transactions(current_user_id)
         elif choice == "3":
             view_transactions_by_category()
         elif choice == "4":
