@@ -163,7 +163,7 @@ def get_all_payment_methods():
 #     print("View transactions by category selected.")
 
 # def view_monthly_summary():
-    print("View monthly summary selected.")
+    # print("View monthly summary selected.")
 
 
 if __name__ == "__main__":
