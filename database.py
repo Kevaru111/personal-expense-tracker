@@ -235,8 +235,25 @@ def get_transactions_by_user_and_category(user_id, category_id):
     return transactions
 
 
-# def view_monthly_summary():
-    # print("View monthly summary selected.")
+def get_total_income_and_expense(user_id):
+
+    connection = connect_db()
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+            SELECT transaction_type, SUM(amount)
+            FROM Transactions
+            WHERE user_id = ?
+            GROUP BY transaction_type
+        """,
+        (user_id,)
+    )
+
+    totals = cursor.fetchall()
+    connection.close()
+    return totals 
+    
 
 
 if __name__ == "__main__":

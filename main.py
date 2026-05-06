@@ -6,7 +6,8 @@ from database import (
     get_all_payment_methods,
     get_transactions_by_user,
     get_all_categories,
-    get_transactions_by_user_and_category
+    get_transactions_by_user_and_category,
+    get_total_income_and_expense
 )
 
 
@@ -175,6 +176,7 @@ def view_all_transactions(user_id):
         )
 
 
+
 def view_transactions_by_category(user_id):
     category_id = choose_any_category()
 
@@ -198,6 +200,8 @@ def view_transactions_by_category(user_id):
         amount = transaction[5]
         description = transaction[6]
 
+        total_amount += amount
+
         print(
             f"{transaction_id}. {transaction_date} | "
             f"{transaction_type} | "
@@ -207,8 +211,31 @@ def view_transactions_by_category(user_id):
             f"{description}"
         )
 
-def view_monthly_summary():
-    print("View monthly summary selected.")
+    print(f"\n Total amount for this category: {total_amount:.2f}")
+
+def view_monthly_summary(user_id):
+    totals = get_total_income_and_expense(user_id)
+
+    if not totals:
+        print("\n No transactions found")
+        return
+
+    total_income = 0
+    total_expense = 0
+
+    for row in totals:
+        transaction_type = row[0]
+        total_amount = row[1]
+
+        if transaction_type == "income":
+            total_income = total_amount
+        elif transaction_type == "expense":
+            total_expences = total_amount
+    
+    print("\n Total summary")
+    print(f"Total income: {total_income:.2f}")
+    print(f"Total expences: {total_expences:.2f}")
+    
 
 def main():
     current_user_id = select_user()
@@ -228,7 +255,7 @@ def main():
         elif choice == "3":
             view_transactions_by_category(current_user_id)
         elif choice == "4":
-            view_monthly_summary()
+            view_monthly_summary(current_user_id)
         elif choice == "5":
             print("Goodbye!")
             break
