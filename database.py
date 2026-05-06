@@ -156,7 +156,7 @@ def get_all_payment_methods():
     connection.close()
     return payment_methods
 
-def get_transaction_by_user(user_id):
+def get_transactions_by_user(user_id):
     connection = connect_db()
     cursor = connection.cursor()
 
@@ -205,19 +205,25 @@ def get_all_categories():
 
 
 def get_transactions_by_user_and_category(user_id, category_id):
-    connection = connect_db
+    connection = connect_db()
     cursor = connection.cursor()
 
     cursor.execute(
         """
-            SELECT category_id, payment_method_id, 
-            amount, transaction_type, description, transaction_date
-            FROM transactions
-            JOIN categories ON transactions.category_id = categories.id
-            LEFT JOIN payment_methods ON transactions.payment_method_id = payment_methods.id
-            WHERE transtions.user_id = ?
-            AND transations.category_id = ?
-            ORDER BY transactions.transation_date DESC, transations.id DECS
+        SELECT
+            t.id,
+            t.transaction_date,
+            t.transaction_type,
+            categories.name,
+            payment_methods.name,
+            t.amount,
+            t.description
+        FROM transactions as t
+        JOIN categories ON t.category_id = categories.id
+        LEFT JOIN payment_methods ON t.payment_method_id = payment_methods.id
+        WHERE t.user_id = ?
+        AND t.category_id = ?
+        ORDER BY t.transaction_date DESC, t.id DESC
         """,
         (user_id, category_id)
     )

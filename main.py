@@ -1,6 +1,13 @@
 from models import Transaction, User, Category, PaymentMethod
-from database import (insert_transaction, insert_user, insert_category, insert_payment_method,
-                      get_all_users, get_categories_by_type, get_all_payment_methods, get_transaction_by_user) 
+from database import (
+    insert_transaction,
+    get_all_users,
+    get_categories_by_type,
+    get_all_payment_methods,
+    get_transactions_by_user,
+    get_all_categories,
+    get_transactions_by_user_and_category
+)
 
 
 def show_menu():
@@ -114,8 +121,36 @@ def choose_payment_method():
 
     return payment_method_id
 
+def choose_any_category():
+    categories = get_all_categories()
+
+    if not categories:
+        print("No categories found.")
+        return None
+    
+    print("\n Choose category")
+
+    for index, category in enumerate(categories, start=1):
+        print(f"{index}. {category[1]}")
+
+    try:
+        choice = int(input("Enter category number: "))
+    except ValueError:
+        print("You should enter a number, not a word.")
+        return None
+
+    if choice < 1 or choice > len(categories):
+        print("Invalid category choice.")
+        return None
+    
+    selected_category = categories[choice - 1]
+    category_id = selected_category[0]
+
+    return category_id
+
+
 def view_all_transactions(user_id):
-    transactions = get_transaction_by_user(user_id)
+    transactions = get_transactions_by_user(user_id)
 
     if not transactions:
         print("\nNo transactons found.")
@@ -140,10 +175,37 @@ def view_all_transactions(user_id):
         )
 
 
+def view_transactions_by_category(user_id):
+    category_id = choose_any_category()
 
+    if category_id is None:
+        return
+    
+    transactions = get_transactions_by_user_and_category(user_id, category_id)
 
-def view_transactions_by_category():
-    print("View transactions by category selected.")
+    if not transactions:
+        print("\n No transations found for this category.")
+        return
+    
+    print("\n Transactions by category: ")
+
+    for transaction in transactions:
+        transaction_id = transaction[0]
+        transaction_date = transaction[1]
+        transaction_type = transaction[2]
+        category_name = transaction[3]
+        payment_method_name = transaction[4]
+        amount = transaction[5]
+        description = transaction[6]
+
+        print(
+            f"{transaction_id}. {transaction_date} | "
+            f"{transaction_type} | "
+            f"{category_name} | "
+            f"{payment_method_name} | "
+            f"{amount:.2f} | "
+            f"{description}"
+        )
 
 def view_monthly_summary():
     print("View monthly summary selected.")
@@ -164,7 +226,7 @@ def main():
         elif choice == "2":
             view_all_transactions(current_user_id)
         elif choice == "3":
-            view_transactions_by_category()
+            view_transactions_by_category(current_user_id)
         elif choice == "4":
             view_monthly_summary()
         elif choice == "5":
