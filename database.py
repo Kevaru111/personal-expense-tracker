@@ -159,8 +159,50 @@ def get_all_payment_methods():
 # def view_all_transactions():
 #     print("View all transactions selected.")
 
-# def view_transactions_by_category():
-#     print("View transactions by category selected.")
+def get_all_categories():
+    connection = connect_db()
+    cursor = connection.cursor()
+
+    cursor.execute(
+
+        """
+            SELECT id, name, category_type FROM categories
+            ORDER BY category_type, name
+        """
+        
+    )
+
+    categories = cursor.fetchall()
+    connection.close()
+
+    return categories
+
+
+
+def get_transactions_by_user_and_category(user_id, category_id):
+    connection = connect_db
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+            SELECT category_id, payment_method_id, 
+            amount, transaction_type, description, transaction_date
+            FROM transactions
+            JOIN categories ON transactions.category_id = categories.id
+            LEFT JOIN payment_methods ON transactions.payment_method_id = payment_methods.id
+            WHERE transtions.user_id = ?
+            AND transations.category_id = ?
+            ORDER BY transactions.transation_date DESC, transations.id DECS
+        """,
+        (user_id, category_id)
+    )
+
+    transactions = cursor.fetchall()
+
+    connection.close()
+
+    return transactions
+
 
 # def view_monthly_summary():
     # print("View monthly summary selected.")

@@ -1,6 +1,7 @@
 from models import Transaction, User, Category, PaymentMethod
 from database import (insert_transaction, insert_user, insert_category, insert_payment_method,
-                      get_all_users, get_categories_by_type, get_all_payment_methods) 
+                      get_all_users, get_categories_by_type, get_all_payment_methods,
+                      get_transactions_by_user_and_category, get_all_categories) 
 
 
 def show_menu():
@@ -115,8 +116,6 @@ def choose_payment_method():
     return payment_method_id
 
     
-
-
 
 
 
