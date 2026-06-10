@@ -3,3 +3,5 @@ __pycache__/
 .env
 expense_tracker.db
 .vscode/
+.venv/
+test-results/
